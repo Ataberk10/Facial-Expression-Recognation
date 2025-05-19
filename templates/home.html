@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load static %} {# Ensure static is loaded if you use it anywhere #}
+
+{% block title %}Welcome - Facial Expression Analyzer{% endblock %}
+
+{% block content %}
+  {# Hero Section - Using Bootstrap padding and background utilities #}
+  <div class="p-5 mb-4 bg-body-tertiary rounded-3"> {# bg-body-tertiary provides a light gray background #}
+    <div class="container-fluid py-5">
+      <h1 class="display-5 fw-bold">Facial Expression Analyzer</h1>
+      <p class="col-md-8 fs-4">Upload face photos and let our AI detect the emotions within. Simple, fast, and secure.</p>
+      {# Optional: Add a bit more description if needed #}
+      {# <p>Get insights from images by analyzing expressions like happiness, sadness, surprise, and more.</p> #}
+
+      {# Conditional Call to Action within Hero (Alternative Placement) #}
+      {% if not user.is_authenticated %}
+        <a href="{% url 'login' %}" class="btn btn-primary btn-lg me-2" type="button">Log In</a>
+        <a href="{% url 'signup' %}" class="btn btn-success btn-lg" type="button">Sign Up Now</a>
+      {% else %}
+         <a href="{% url 'query_create' %}" class="btn btn-primary btn-lg" type="button">Start New Analysis</a>
+      {% endif %}
+    </div>
+  </div>
+
+  {# Main Content Area - Status and Actions #}
+  <div class="row align-items-md-stretch">
+    {# You could use one or two columns here depending on how much info you want #}
+    <div class="col-md-12"> {# Full width column #}
+      <div class="h-100 p-5 border rounded-3">
+        {% if user.is_authenticated %}
+          <h2>Dashboard Access</h2>
+          <p>Welcome back, {{ user.username }}! Access your previous analyses or start a new one.</p>
+          <a href="{% url 'query_list' %}" class="btn btn-outline-secondary me-2" type="button">View My Queries</a>
+          <a href="{% url 'query_create' %}" class="btn btn-outline-primary" type="button">Create New Query</a>
+        {% else %}
+          <h2>How it Works</h2>
+          <ol>
+              <li><strong>Sign Up / Log In:</strong> Create a free account or log in.</li>
+              <li><strong>Upload Photo:</strong> Choose a clear photo containing a face.</li>
+              <li><strong>Analyze:</strong> Our system detects the facial expression.</li>
+              <li><strong>Review Results:</strong> See the detected emotion and manage your queries.</li>
+          </ol>
+          <p>Ready to try?</p>
+          <a href="{% url 'signup' %}" class="btn btn-success" type="button">Sign Up for Free</a>
+        {% endif %}
+      </div>
+    </div>
+
+    {# Example: Add a second column if desired #}
+    <div class="col-md-6">
+      <div class="h-100 p-5 bg-body-tertiary border rounded-3">
+        <h2>Features</h2>
+        <ul>
+            <li>Secure Photo Upload</li>
+            <li>Accurate Expression Detection</li>
+            <li>Personal Query History</li>
+            <li>Easy Data Management</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+{% endblock %}

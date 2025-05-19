@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}My Queries{% endblock %}
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2>My Facial Expression Queries</h2>
+      <a href="{% url 'query_create' %}" class="btn btn-primary">New Query</a>
+  </div>
+
+  {% if queries_page and queries_page.object_list %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"> {# Responsive grid #}
+      {% for query in queries_page %}
+        <div class="col">
+          <div class="card h-100"> {# Card component #}
+            {% if query.uploaded_photo %}
+              <img src="{{ query.uploaded_photo.url }}" class="card-img-top" alt="{{ query.subject_name }}" style="height: 200px; object-fit: cover;">
+            {% else %}
+               <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                   <span class="text-muted">No Image</span>
+               </div>
+            {% endif %}
+            <div class="card-body">
+              <h5 class="card-title">
+                  <a href="{% url 'query_detail' pk=query.pk %}">{{ query.subject_name }}</a>
+              </h5>
+              <p class="card-text mb-1"><small class="text-muted">Analyzed: {{ query.created_at|date:"Y-m-d H:i" }}</small></p>
+              <p class="card-text">Result: <strong>{{ query.detected_expression|default:"N/A" }}</strong></p>
+            </div>
+            <div class="card-footer text-end"> {# Actions in footer #}
+                <a href="{% url 'query_detail' pk=query.pk %}" class="btn btn-sm btn-outline-secondary">Details</a>
+                <a href="{% url 'query_delete' pk=query.pk %}" class="btn btn-sm btn-outline-danger ms-1">Delete</a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    {# Pagination #}
+    {% if queries_page.has_other_pages %}
+    <nav aria-label="Query navigation" class="mt-4">
+      <ul class="pagination justify-content-center">
+        {% if queries_page.has_previous %}
+          <li class="page-item"><a class="page-link" href="?page=1">« First</a></li>
+          <li class="page-item"><a class="page-link" href="?page={{ queries_page.previous_page_number }}">Previous</a></li>
+        {% else %}
+          <li class="page-item disabled"><span class="page-link">« First</span></li>
+          <li class="page-item disabled"><span class="page-link">Previous</span></li>
+        {% endif %}
+
+        <li class="page-item active" aria-current="page"><span class="page-link">{{ queries_page.number }}</span></li>
+
+        {% if queries_page.has_next %}
+          <li class="page-item"><a class="page-link" href="?page={{ queries_page.next_page_number }}">Next</a></li>
+          <li class="page-item"><a class="page-link" href="?page={{ queries_page.paginator.num_pages }}">Last »</a></li>
+        {% else %}
+          <li class="page-item disabled"><span class="page-link">Next</span></li>
+          <li class="page-item disabled"><span class="page-link">Last »</span></li>
+        {% endif %}
+      </ul>
+    </nav>
+    <p class="text-center text-muted">Page {{ queries_page.number }} of {{ queries_page.paginator.num_pages }}</p>
+    {% endif %}
+
+  {% else %}
+    <div class="alert alert-info">You haven't created any queries yet.</div>
+    <p><a href="{% url 'query_create' %}" class="btn btn-primary">Create your first query!</a></p>
+  {% endif %}
+{% endblock %}

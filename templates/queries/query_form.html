@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}New Expression Query{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <h2>Create New Facial Expression Query</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+         {% for field in form %}
+            <div class="mb-3">
+                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                {% if field.name == 'notes' %} {# Use textarea for notes #}
+                     <textarea name="{{ field.name }}" id="{{ field.id_for_label }}" class="form-control {% if field.errors %}is-invalid{% endif %}" rows="3">{{ field.value|default:"" }}</textarea>
+                {% elif field.name == 'uploaded_photo' %} {# Special handling for file input #}
+                    <input type="file" name="{{ field.name }}" accept="image/*" required id="{{ field.id_for_label }}" class="form-control {% if field.errors %}is-invalid{% endif %}">
+                {% else %} {# Default input for others like subject_name #}
+                     <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" id="{{ field.id_for_label }}" class="form-control {% if field.errors %}is-invalid{% endif %}" value="{{ field.value|default:"" }}" {% if field.field.required %}required{% endif %}>
+                {% endif %}
+
+                {% if field.help_text %}
+                    <div class="form-text">{{ field.help_text|safe }}</div>
+                {% endif %}
+                {% for error in field.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">Analyze Expression</button>
+         <a href="{% url 'query_list' %}" class="btn btn-secondary ms-2">Cancel</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

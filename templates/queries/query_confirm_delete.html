@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Confirm Deletion{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 text-center">
+      <h2>Confirm Deletion</h2>
+      <p class="lead">Are you sure you want to delete the query for "<strong>{{ query.subject_name }}</strong>"?</p>
+      <p class="text-muted"><em>Created on: {{ query.created_at|date:"F j, Y, P" }}</em></p>
+
+      {% if query.uploaded_photo %}
+      <p>Associated photo:</p>
+      <img src="{{ query.uploaded_photo.url }}" alt="Photo for {{ query.subject_name }}" style="max-width: 200px; height: auto; margin-bottom: 20px;" class="img-thumbnail">
+      {% endif %}
+
+      <form method="post" action="{% url 'query_delete' pk=query.pk %}" class="mt-3">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger btn-lg">Confirm Delete</button>
+          <a href="{% url 'query_detail' pk=query.pk %}" class="btn btn-secondary btn-lg ms-2">Cancel</a>
+      </form>
+  </div>
+</div>
+{% endblock %}

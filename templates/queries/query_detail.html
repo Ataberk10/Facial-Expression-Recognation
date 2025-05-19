@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Query Detail: {{ query.subject_name }}{% endblock %}
+{% block content %}
+  <h2 class="mb-4">Query Details: {{ query.subject_name }}</h2>
+
+  <div class="row">
+    {# Image Column #}
+    <div class="col-md-7 col-lg-8 mb-4">
+        {% if query.uploaded_photo %}
+            <img src="{{ query.uploaded_photo.url }}" alt="Photo for {{ query.subject_name }}" class="img-fluid rounded border"> {# img-fluid makes it responsive #}
+        {% else %}
+            <div class="alert alert-secondary">No image available for this query.</div>
+        {% endif %}
+    </div>
+
+    {# Metadata Column #}
+    <div class="col-md-5 col-lg-4">
+        <div class="card">
+            <div class="card-header">Information</div>
+            <div class="card-body">
+                <p><strong>Subject Name:</strong><br> {{ query.subject_name }}</p>
+                <p><strong>Analyzed On:</strong><br> {{ query.created_at|date:"F j, Y, P" }}</p>
+                <p><strong>Detected Expression:</strong><br> <span class="badge bg-info fs-6">{{ query.detected_expression|default:"N/A" }}</span></p> {# Use a badge #}
+                {% if query.confidence_score is not None %}
+                <p><strong>Confidence:</strong><br> {{ query.confidence_score|floatformat:2 }}</p>
+                {% else %}
+                <p><strong>Confidence:</strong><br> N/A</p>
+                {% endif %}
+
+                {% if query.notes %}
+                    <hr>
+                    <h5>Notes:</h5>
+                    <p style="white-space: pre-wrap;">{{ query.notes }}</p>
+                {% endif %}
+            </div>
+             <div class="card-footer">
+                 <a href="{% url 'query_list' %}" class="btn btn-secondary">Back to List</a>
+                 <a href="{% url 'query_delete' pk=query.pk %}" class="btn btn-danger float-end">Delete Query</a>
+             </div>
+        </div>
+    </div>
+  </div>
+{% endblock %}
