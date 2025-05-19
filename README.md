@@ -1,4 +1,4 @@
-# Facial Expression Analyzer - Django Web App
+# Facial Expression Recognation Using Computer Vision
 
 ## Introduction
 
